@@ -7,5 +7,6 @@ const fsRouter = Router();
 //     .get(fsController.readDirectoryContent);
 
 fsRouter.post("/content", fsController.readDirectoryContent);
+fsRouter.post("/create", fsController.createNewFolder);
 
 export default fsRouter;

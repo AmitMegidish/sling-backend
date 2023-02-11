@@ -1,4 +1,4 @@
-import { readdir } from 'fs/promises';
+import { readdir, mkdir } from 'fs/promises';
 
 const readDirectoryContent = async (req, res) => {
     try {
@@ -26,6 +26,24 @@ const readDirectoryContent = async (req, res) => {
     }
 };
 
+const createNewFolder = async (req, res) => {
+    try {
+        const { path } = req.body;
+
+        await mkdir(path);
+
+        res.json({
+            ok: true
+        });
+    } catch (error) {
+        res.json({
+            ok: false,
+            msg: error.message
+        });
+    }
+};
+
 export default {
-    readDirectoryContent
+    readDirectoryContent,
+    createNewFolder
 };
