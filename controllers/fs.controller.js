@@ -1,4 +1,4 @@
-import { readdir, mkdir } from 'fs/promises';
+import { readdir, mkdir, rename } from 'fs/promises';
 
 const readDirectoryContent = async (req, res) => {
     try {
@@ -43,7 +43,24 @@ const createNewFolder = async (req, res) => {
     }
 };
 
+const renameFolderOrFile = async (req, res) => {
+    try {
+        const { oldPath, newPath } = req.body;
+        await rename(oldPath, newPath);
+
+        res.json({
+            ok: true
+        });
+    } catch (error) {
+        res.json({
+            ok: false,
+            msg: error.message
+        });
+    }
+};
+
 export default {
     readDirectoryContent,
-    createNewFolder
+    createNewFolder,
+    renameFolderOrFile
 };

@@ -8,5 +8,6 @@ const fsRouter = Router();
 
 fsRouter.post("/content", fsController.readDirectoryContent);
 fsRouter.post("/create", fsController.createNewFolder);
+fsRouter.put("/rename", fsController.renameFolderOrFile)
 
 export default fsRouter;
