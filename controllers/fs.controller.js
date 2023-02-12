@@ -1,4 +1,4 @@
-import { readdir, mkdir, rename } from 'fs/promises';
+import { readdir, mkdir, rename, rmdir, unlink } from 'fs/promises';
 
 const readDirectoryContent = async (req, res) => {
     try {
@@ -45,8 +45,30 @@ const createNewFolder = async (req, res) => {
 
 const renameFolderOrFile = async (req, res) => {
     try {
+        console.log(req.body)
         const { oldPath, newPath } = req.body;
         await rename(oldPath, newPath);
+
+        res.json({
+            ok: true
+        });
+    } catch (error) {
+        console.log(error)
+        res.json({
+            ok: false,
+            msg: error.message
+        });
+    }
+};
+
+const deleteFolderOrFile = async (req, res) => {
+    const { path, isDirectory } = req.body;
+    try {
+        if (isDirectory) {
+            await rmdir(path, { recursive: true, force: true });
+        } else {
+            await unlink(path);
+        }
 
         res.json({
             ok: true
@@ -62,5 +84,6 @@ const renameFolderOrFile = async (req, res) => {
 export default {
     readDirectoryContent,
     createNewFolder,
-    renameFolderOrFile
+    renameFolderOrFile,
+    deleteFolderOrFile
 };
