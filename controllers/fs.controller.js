@@ -1,4 +1,4 @@
-import { readdir, mkdir, rename, rmdir, unlink } from 'fs/promises';
+import { readdir, mkdir, rename, rm, unlink } from 'fs/promises';
 
 const readDirectoryContent = async (req, res) => {
     try {
@@ -62,18 +62,19 @@ const renameFolderOrFile = async (req, res) => {
 };
 
 const deleteFolderOrFile = async (req, res) => {
-    const { path, isDirectory } = req.body;
+    const { entityPath, isDirectory } = req.body;
     try {
         if (isDirectory) {
-            await rmdir(path, { recursive: true, force: true });
+            await rm(entityPath, { recursive: true, force: true });
         } else {
-            await unlink(path);
+            await unlink(entityPath);
         }
 
         res.json({
             ok: true
         });
     } catch (error) {
+        console.log(error)
         res.json({
             ok: false,
             msg: error.message
