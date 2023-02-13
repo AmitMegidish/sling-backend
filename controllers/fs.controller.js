@@ -1,9 +1,9 @@
 import { readdir, mkdir, rename, rm, unlink } from 'fs/promises';
 
 const readDirectoryContent = async (req, res) => {
-    try {
-        const { path } = req.body;
+    const { path } = req.body;
 
+    try {
         const directoryContent = await readdir((path), { withFileTypes: true });
 
         const responseData = directoryContent.map(entity => ({
@@ -14,12 +14,12 @@ const readDirectoryContent = async (req, res) => {
         // Sorting the array of data by type - folders first, files last.
         responseData.sort((a, b) => (a.isDirectory === b.isDirectory) ? 0 : a.isDirectory ? -1 : 1);
 
-        res.json({
+        res.status(200).json({
             ok: true,
             data: responseData
         });
     } catch (error) {
-        res.json({
+        res.status(500).json({
             ok: false,
             msg: error.message
         });
@@ -27,16 +27,16 @@ const readDirectoryContent = async (req, res) => {
 };
 
 const createNewFolder = async (req, res) => {
-    try {
-        const { path } = req.body;
+    const { path } = req.body;
 
+    try {
         await mkdir(path);
 
-        res.json({
+        res.status(201).json({
             ok: true
         });
     } catch (error) {
-        res.json({
+        res.status(500).json({
             ok: false,
             msg: error.message
         });
@@ -44,17 +44,16 @@ const createNewFolder = async (req, res) => {
 };
 
 const renameFolderOrFile = async (req, res) => {
+    const { oldPath, newPath } = req.body;
+
     try {
-        console.log(req.body)
-        const { oldPath, newPath } = req.body;
         await rename(oldPath, newPath);
 
-        res.json({
+        res.status(200).json({
             ok: true
         });
     } catch (error) {
-        console.log(error)
-        res.json({
+        res.status(500).json({
             ok: false,
             msg: error.message
         });
@@ -63,6 +62,7 @@ const renameFolderOrFile = async (req, res) => {
 
 const deleteFolderOrFile = async (req, res) => {
     const { entityPath, isDirectory } = req.body;
+
     try {
         if (isDirectory) {
             await rm(entityPath, { recursive: true, force: true });
@@ -70,11 +70,10 @@ const deleteFolderOrFile = async (req, res) => {
             await unlink(entityPath);
         }
 
-        res.json({
+        res.status.json({
             ok: true
         });
     } catch (error) {
-        console.log(error)
         res.json({
             ok: false,
             msg: error.message
