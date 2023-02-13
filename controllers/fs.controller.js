@@ -70,11 +70,12 @@ const deleteFolderOrFile = async (req, res) => {
             await unlink(entityPath);
         }
 
-        res.status(500).json({
+        res.status(200).json({
             ok: true
         });
     } catch (error) {
-        res.json({
+        console.log(error)
+        res.status(500).json({
             ok: false,
             msg: error.message
         });
